@@ -1,18 +1,16 @@
 ---
 title: "Reproducible Research: Peer Assessment 1"
-output: github_document
+output: 
+  html_document:
+    keep_md: true
 ---
-
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
 
 ## Loading and preprocessing the data
 
 
 Load plotting libraries and dataset
 
-```{r}
+```{r echo=TRUE}
 library(lattice) 
 dataset <- read.csv('C:/Users/Kevin Verhaegh/Desktop/Reproducible data/Assignment 1/activity.csv')
 ```
@@ -22,14 +20,14 @@ dataset <- read.csv('C:/Users/Kevin Verhaegh/Desktop/Reproducible data/Assignmen
 
 Determine total steps taken each day and plot data in histogram.
 
-```{r}
+```{r echo=TRUE}
 StepsPerDay <- tapply(dataset$steps, dataset$date, sum, na.rm = T) #calculate nr. of steps per day and ignorne NaNs
 hist(StepsPerDay,breaks=20,main = 'Histogram of total steps per day', xlab = 'Nr of steps', col='lightblue') #make histogram of nr. of steps per day
 ```
 
 Determine mean and median of the total number of steps taken per day.
 
-```{r}
+```{r echo=TRUE}
 mean(StepsPerDay) # mean nr. of steps per day
 median(StepsPerDay) # median number of steps per day
 ```
@@ -39,7 +37,7 @@ median(StepsPerDay) # median number of steps per day
 
 Average data over all days and determine number of steps per time interval (while ignoring NaNs)
 
-```{r}
+```{r echo=TRUE}
 StepsPerInterval <- tapply(dataset$steps, dataset$interval, mean, na.rm = T) #calculate mean nr. of steps per interval and ignorne NaNs
 plot(StepsPerInterval ~ unique(dataset$interval), type = 'l', main = 'Daily activity pattern', xlab = 'Time interval (minutes)', ylab = 'Average steps per interval') #plot
 which.max(StepsPerInterval) #determine interval where activity is maximum
@@ -53,7 +51,7 @@ The time interval at which the daily activity (average nr. of steps per interval
 
 Get total number of Nas
 
-```{r}
+```{r echo=TRUE}
 TotNrNa <- sum(is.na(dataset$steps))
 ```
 
@@ -61,7 +59,7 @@ Clean up NaNs from data. Use the following algorithm.
 - Determine median nr. of steps per time interval for a given day of the week
 - For each NaN, replace the NaN with the median nr. of steps of the corresponding time interval and corresponding day of the week.
 
-```{r}
+```{r echo=TRUE}
 dataset$WeekDay <- weekdays(as.Date(dataset$date), abbreviate = FALSE) #append to data set the day of the week
 dataset$WeekDay <- as.factor(dataset$WeekDay) #Express day of week as factor
 dataset$interval <- as.factor(dataset$interval) #express interval as factor
@@ -81,7 +79,7 @@ for (i in 1:length(dataset$steps)){ #loop over all elements
 
 Calculate nr of steps per day, show histogram and calculate mean and median of nr. of steps per day.
 
-```{r}
+```{r echo=TRUE}
 StepsPerDay <- tapply(NewDataset$steps, dataset$date, sum) #calculate nr. of steps per day 
 hist(StepsPerDay,breaks=20,main = 'Histogram of total steps per day', xlab = 'Nr of steps', col='lightblue') #make histogram of nr. of steps per day
 mean(StepsPerDay) # mean nr. of steps per day
@@ -94,7 +92,7 @@ Comparing both histograms, many cases in which no steps per day have been detect
 
 First, convert the current WeekDay factor to a two level factor (weekday or weekend)
 
-```{r}
+```{r echo=TRUE}
 NewDataset$Week <- NewDataset$WeekDay
 levels(NewDataset$Week)[levels(NewDataset$Week) %in% c('Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday')] <- 'Week'
 levels(NewDataset$Week)[levels(NewDataset$Week) %in% c('Saturday', 'Sunday')] <- 'Weekend'
@@ -102,7 +100,7 @@ levels(NewDataset$Week)[levels(NewDataset$Week) %in% c('Saturday', 'Sunday')] <-
 
 Make a panel plot with activity during the week and weekend
 
-```{r}
+```{r echo=TRUE}
 MeanStepsFrame <- with(NewDataset, aggregate(steps, list(Week, interval), mean))
 xyplot(x ~ Group.2 | Group.1, data = MeanStepsFrame[order(MeanStepsFrame$Group.2),], type = 'l', main = 'Activity during week and weekend', 'xlab' = '', ylab = 'Mean nr. of steps', layout = c(1,2))
 ```
